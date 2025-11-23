@@ -12,7 +12,6 @@ import userPaymentRoutes from "./routes/userPayments.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Security Middleware
 app.use(helmet());
@@ -37,14 +36,16 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Database Connection - Fixed deprecated options
+// Database Connection
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(process.env.MONGODB_URI);
+      console.log("MongoDB Connected");
+    }
   } catch (error) {
     console.error("Database connection error:", error.message);
-    process.exit(1);
+    throw error;
   }
 };
 
@@ -52,13 +53,24 @@ const connectDB = async () => {
 app.use("/api/user-payments", userPaymentRoutes);
 
 // Health Check Route
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is running successfully",
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-  });
+app.get("/api/health", async (req, res) => {
+  try {
+    await connectDB();
+    res.status(200).json({
+      success: true,
+      message: "Server is running successfully",
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      database:
+        mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+      error: error.message,
+    });
+  }
 });
 
 // Root route
@@ -67,7 +79,11 @@ app.get("/", (req, res) => {
     success: true,
     message: "Chit Fund Payment API is running!",
     version: "1.0.0",
-    documentation: "/api/health",
+    endpoints: {
+      health: "/api/health",
+      userPayments: "/api/user-payments",
+      documentation: "Available endpoints listed in health check",
+    },
   });
 });
 
@@ -89,18 +105,26 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Start Server
-const startServer = async () => {
-  try {
-    await connectDB();
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
+// For Vercel serverless deployment
+const handler = app;
 
-startServer();
+// For local development
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  const startServer = async () => {
+    try {
+      await connectDB();
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+      });
+    } catch (error) {
+      console.error("Failed to start server:", error);
+      process.exit(1);
+    }
+  };
+
+  startServer();
+}
+
+export default handler;
