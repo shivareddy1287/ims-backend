@@ -4,6 +4,8 @@ import UserPayment from "../models/userPayment.js";
 // @route   POST /api/user-payments
 // @access  Public
 const createUserPayment = async (req, res) => {
+  console.log("s");
+
   try {
     const data = { ...req.body };
 

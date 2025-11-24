@@ -6,6 +6,7 @@ const paymentRecordSchema = new mongoose.Schema({
     required: [true, "Month number is required"],
     min: [1, "Month number must be at least 1"],
   },
+
   amount: {
     type: Number,
     required: [true, "Payment amount is required"],
@@ -65,20 +66,9 @@ const userPaymentSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
       match: [/^\d{10}$/, "Please enter a valid 10-digit phone number"],
     },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      lowercase: true,
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please enter a valid email",
-      ],
-    },
+
     address: {
-      street: String,
-      city: String,
-      state: String,
-      pincode: String,
+      type: "String",
     },
     chitAmount: {
       type: Number,
@@ -90,8 +80,13 @@ const userPaymentSchema = new mongoose.Schema(
       required: [true, "Tenure is required"],
       min: [1, "Tenure must be at least 1 month"],
     },
+    tenureType: {
+      type: "String",
+       default: "week",
+    },
     monthlyPremium: {
       type: Number,
+     
     },
     startDate: {
       type: Date,
