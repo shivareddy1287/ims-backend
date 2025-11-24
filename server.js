@@ -32,6 +32,9 @@ app.use(
   })
 );
 
+// REQUIRED for Vercel to stop crashing
+app.set("trust proxy", 1);
+
 // Body Parser Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
