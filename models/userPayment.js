@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const paymentRecordSchema = new mongoose.Schema({
   monthNumber: {
     type: Number,
-    required: [true, "Month number is required"],
+    // required: [true, "Month number is required"],
     min: [1, "Month number must be at least 1"],
   },
   reference: {
@@ -12,17 +12,17 @@ const paymentRecordSchema = new mongoose.Schema({
 
   amount: {
     type: Number,
-    required: [true, "Payment amount is required"],
+    // required: [true, "Payment amount is required"],
     min: [0, "Amount cannot be negative"],
   },
   paymentDate: {
     type: Date,
-    required: [true, "Payment date is required"],
+    // required: [true, "Payment date is required"],
     default: Date.now,
   },
   dueDate: {
     type: Date,
-    required: [true, "Due date is required"],
+    // required: [true, "Due date is required"],
   },
   status: {
     type: String,
@@ -59,12 +59,12 @@ const userPaymentSchema = new mongoose.Schema(
     },
     aadharNumber: {
       type: String,
-      required: [true, "Aadhar number is required"],
+      // required: [true, "Aadhar number is required"],
       match: [/^\d{12}$/, "Please enter a valid 12-digit Aadhar number"],
     },
     phoneNumber: {
       type: String,
-      required: [true, "Phone number is required"],
+      // required: [true, "Phone number is required"],
       match: [/^\d{10}$/, "Please enter a valid 10-digit phone number"],
     },
 
@@ -73,12 +73,12 @@ const userPaymentSchema = new mongoose.Schema(
     },
     chitAmount: {
       type: Number,
-      required: [true, "Chit amount is required"],
+      // required: [true, "Chit amount is required"],
       min: [1000, "Chit amount must be at least 1000"],
     },
     tenure: {
       type: Number,
-      required: [true, "Tenure is required"],
+      // required: [true, "Tenure is required"],
       min: [1, "Tenure must be at least 1 month"],
     },
     tenureType: {
