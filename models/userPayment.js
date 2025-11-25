@@ -61,8 +61,6 @@ const userPaymentSchema = new mongoose.Schema(
       type: String,
       required: [true, "Aadhar number is required"],
       match: [/^\d{12}$/, "Please enter a valid 12-digit Aadhar number"],
-      unique: true,
-      index: true, // Remove this line to fix duplicate index warning
     },
     phoneNumber: {
       type: String,

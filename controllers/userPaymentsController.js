@@ -63,10 +63,7 @@ const getAllUserPayments = async (req, res) => {
       ];
     }
 
-    const userPayments = await UserPayment.find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
+    const userPayments = await UserPayment.find(query);
 
     const total = await UserPayment.countDocuments(query);
 
