@@ -9,13 +9,6 @@ const createUserPayment = async (req, res) => {
   try {
     const data = { ...req.body };
 
-    // Calculate derived fields before creating the document
-    if (data.startDate && data.tenure && !data.endDate) {
-      const endDate = new Date(data.startDate);
-      endDate.setMonth(endDate.getMonth() + data.tenure);
-      data.endDate = endDate;
-    }
-
     if (data.chitAmount && data.tenure && !data.monthlyPremium) {
       data.monthlyPremium = data.chitAmount / data.tenure;
     }

@@ -6,6 +6,9 @@ const paymentRecordSchema = new mongoose.Schema({
     required: [true, "Month number is required"],
     min: [1, "Month number must be at least 1"],
   },
+  reference: {
+    type: String,
+  },
 
   amount: {
     type: Number,
@@ -82,11 +85,10 @@ const userPaymentSchema = new mongoose.Schema(
     },
     tenureType: {
       type: "String",
-       default: "week",
+      default: "week",
     },
     monthlyPremium: {
       type: Number,
-     
     },
     startDate: {
       type: Date,
